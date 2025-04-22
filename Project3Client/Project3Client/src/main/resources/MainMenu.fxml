@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane prefHeight="400" prefWidth="600" style="-fx-background-color: #f0f0f0;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="MainMenuController">
+
+    <top>
+        <HBox alignment="CENTER" prefHeight="75.0" prefWidth="600.0">
+            <padding>
+                <Insets bottom="20" left="20" right="20" top="20" />
+            </padding>
+            <Label prefHeight="41.0" prefWidth="270.0" style="-fx-font-size: 28px; -fx-font-weight: bold;" text="Connect Four Online">
+            <font>
+               <Font name="Lucida Sans Typewriter Regular" size="13.0" />
+            </font></Label>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox alignment="CENTER" spacing="15">
+            <ImageView fitHeight="100" fitWidth="100">
+                <image>
+                    <Image url="@connect4logo.png" />
+                </image>
+            </ImageView>
+            <TextField fx:id="usernameField" maxWidth="250" promptText="Enter Username" />
+            <Button onAction="#handleConnect" prefWidth="120" text="Connect!">
+                <font>
+                    <Font name="Lucida Sans Typewriter Bold" size="13.0" />
+                </font>
+            </Button>
+            <Label fx:id="errorLabel" text="Username taken already!" textFill="red" visible="false" />
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="BOTTOM_RIGHT">
+            <padding>
+                <Insets bottom="15" left="15" right="15" top="15" />
+            </padding>
+            <Button onAction="#handleQuit" text="Quit Game" textFill="#dc4141">
+            <font>
+               <Font name="System Bold" size="12.800000190734863" />
+            </font></Button>
+        </HBox>
+    </bottom>
+
+</BorderPane>

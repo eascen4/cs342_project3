@@ -52,7 +52,6 @@ public class ConnectFourGame {
                 board[row][column] = players.get(currentPlayerIndex);
 
                 if(checkForWin(row, column)) status = GameStatus.PLAYER_WON;
-                else if 
 
                 return true;
             }

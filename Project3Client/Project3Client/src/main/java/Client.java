@@ -6,49 +6,41 @@ import java.net.Socket;
 import java.util.function.Consumer;
 
 
-
 public class Client extends Thread{
-
 	
 	Socket socketClient;
-	
 	ObjectOutputStream out;
 	ObjectInputStream in;
-	
 	private final Consumer<Message> callback;
 	
-	Client(Consumer<Message> call){
-	
-		callback = call;
+	Client(Consumer<Message> callback){
+		this.callback = callback;
 	}
-	
+
+	public void connect(String host, int port) throws IOException {
+		socketClient = new Socket(host, port);
+		out = new ObjectOutputStream(socketClient.getOutputStream());
+		in = new ObjectInputStream(socketClient.getInputStream());
+		socketClient.setTcpNoDelay(true);
+		this.start();
+	}
+
 	public void run() {
-		
 		try {
-		socketClient= new Socket("127.0.0.1",5555);
-	    out = new ObjectOutputStream(socketClient.getOutputStream());
-	    in = new ObjectInputStream(socketClient.getInputStream());
-	    socketClient.setTcpNoDelay(true);
-		}
-		catch(Exception e) {}
-		
-		while(true) {
-			 
-			try {
-			Message message = (Message) in.readObject();
-			callback.accept(message);
+			while (true) {
+				Message message = (Message) in.readObject();
+				callback.accept(message);
 			}
-			catch(Exception e) {}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-	
-    }
-	
+	}
+
+
 	public void send(Message data) {
-		
 		try {
 			out.writeObject(data);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

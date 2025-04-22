@@ -1,94 +1,45 @@
-
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import java.util.HashMap;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
-public class GuiClient extends Application{
-
-	
-	TextField c1;
-	Button b1;
-	HashMap<String, Scene> sceneMap;
-	VBox clientBox;
-	Client clientConnection;
-
-	HBox fields;
-
-	ComboBox<Integer> listUsers;
-	ListView<String> listItems;
-
-	
-	
-	public static void main(String[] args) {
-		launch(args);
-	}
+public class GuiClient extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		clientConnection = new Client(data->{
-				Platform.runLater(()->{
-					switch (data.type){
-						case NEWUSER:
-							listUsers.getItems().add(data.recipient);
-							listItems.getItems().add(data.recipient + " has joined!");
-							break;
-						case DISCONNECT:
-							listUsers.getItems().remove(data.recipient);
-							listItems.getItems().add(data.recipient + " has disconnected!");
-							break;
-						case TEXT:
-							listItems.getItems().add(data.recipient+": "+data.message);
-					}
-			});
+		FXMLLoader mainmenuLoader = new FXMLLoader(getClass().getResource("MainMenu.fxml"));
+		Scene mainMenuScene = new Scene(mainmenuLoader.load());
+		ClientData.sceneMap.put("main", mainMenuScene);
+
+		FXMLLoader lobbyLoader = new FXMLLoader(getClass().getResource("Lobby.fxml"));
+		Scene lobbyScene = new Scene(lobbyLoader.load());
+		ClientData.sceneMap.put("lobby", lobbyScene);
+
+		FXMLLoader matchFoundLoader = new FXMLLoader(getClass().getResource("MatchFound.fxml"));
+		Scene matchFoundScene = new Scene(matchFoundLoader.load());
+		ClientData.sceneMap.put("match", matchFoundScene);
+
+		FXMLLoader gameLoader = new FXMLLoader(getClass().getResource("Game.fxml"));
+		Scene gameScene = new Scene(gameLoader.load());
+		ClientData.sceneMap.put("game", gameScene);
+
+		FXMLLoader resultLoader = new FXMLLoader(getClass().getResource("Result.fxml"));
+		Scene resultScene = new Scene(resultLoader.load());
+		ClientData.sceneMap.put("result", resultScene);
+
+		primaryStage.setTitle("Connect Four Online");
+		primaryStage.setScene(mainMenuScene);
+		primaryStage.setOnCloseRequest(e -> {
+			System.exit(0);
 		});
-							
-		clientConnection.start();
-
-		listUsers = new ComboBox<Integer>();
-		listUsers.getItems().add(-1);
-		listUsers.setValue(-1);
-		listItems = new ListView<String>();
-
-		
-		c1 = new TextField();
-		b1 = new Button("Send");
-		fields = new HBox(listUsers,b1);
-		b1.setOnAction(e->{clientConnection.send(new Message(listUsers.getValue(), c1.getText())); c1.clear();});
-
-		clientBox = new VBox(10, c1,fields,listItems);
-		clientBox.setStyle("-fx-background-color: blue;"+"-fx-font-family: 'serif';");
-
-
-
-		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent t) {
-                Platform.exit();
-                System.exit(0);
-            }
-        });
-
-
-		primaryStage.setScene(new Scene(clientBox, 400, 300));
-		primaryStage.setTitle("Client");
 		primaryStage.show();
-		
 	}
-	
 
-
+	public static void main(String[] args) {
+		launch(args);
+	}
 }
+
