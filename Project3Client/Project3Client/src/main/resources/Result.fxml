@@ -23,7 +23,7 @@
     <Button fx:id="rematchButton" onAction="#handleRematch" text="Play again with Player" prefWidth="220" />
 
     <VBox spacing="10" alignment="CENTER">
-        <Button fx:id="returnMainButton" onAction="#handleReturnMenu" text="Return to Main Menu" prefWidth="180" />
+        <Button fx:id="returnMainButton" onAction="#handleReturnMain" text="Return to Main Menu" prefWidth="180" />
         <Button fx:id="returnLobbyButton" onAction="#handleReturnLobby" text="Return to Lobby" prefWidth="180" />
     </VBox>
 

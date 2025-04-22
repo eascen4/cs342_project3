@@ -1,3 +1,4 @@
+ResultController.class
 Client.class
 MatchFoundController.class
 GameController.class
@@ -10,4 +11,5 @@ MainMenuController.class
 MessageType.class
 GuiClient.class
 MainMenuController$1.class
+ResultController$1.class
 MatchFoundController$1.class
