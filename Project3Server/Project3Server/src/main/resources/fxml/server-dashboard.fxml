@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="app.controllers.ServerDashboardController"
+            prefHeight="400.0" prefWidth="600.0">
+    <left>
+        <VBox spacing="10" prefWidth="200">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Label text="Connected Players:"/>
+            <ListView fx:id="playerListView"/>
+            <Label text="Active Games:"/>
+            <ListView fx:id="activeGamesListView"/>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Label text="Server Log:"/>
+            <TextArea fx:id="logTextArea" editable="false" wrapText="true" VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </center>
+
+
+</BorderPane>
