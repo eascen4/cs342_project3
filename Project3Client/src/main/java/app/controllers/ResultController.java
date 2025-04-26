@@ -1,3 +1,5 @@
+package app.controllers;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -35,10 +37,7 @@ public class ResultController implements Initializable {
 
     @FXML
     private void handleRematch() {
-        if (ClientData.sceneMap.containsKey("lobby")) {
-            Stage stage = (Stage) rematchButton.getScene().getWindow();
-            stage.setScene(ClientData.sceneMap.get("lobby"));
-        }
+        // if the other client also wants to play again, then both go backt to game scene
     }
 
     @FXML
@@ -49,13 +48,7 @@ public class ResultController implements Initializable {
         }
     }
 
-    @FXML
-    private void handleReturnLobby() {
-        if (ClientData.sceneMap.containsKey("lobby")) {
-            Stage stage = (Stage) returnLobbyButton.getScene().getWindow();
-            stage.setScene(ClientData.sceneMap.get("lobby"));
-        }
-    }
+
 
 
 }

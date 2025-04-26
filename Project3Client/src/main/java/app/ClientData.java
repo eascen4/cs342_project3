@@ -1,3 +1,5 @@
+package app;
+
 import javafx.scene.Scene;
 import java.util.HashMap;
 

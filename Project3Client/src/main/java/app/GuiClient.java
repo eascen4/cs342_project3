@@ -1,3 +1,5 @@
+package app;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,23 +12,15 @@ public class GuiClient extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		FXMLLoader mainmenuLoader = new FXMLLoader(getClass().getResource("MainMenu.fxml"));
+		FXMLLoader mainmenuLoader = new FXMLLoader(getClass().getResource("resources/MainMenu.fxml"));
 		Scene mainMenuScene = new Scene(mainmenuLoader.load());
 		ClientData.sceneMap.put("main", mainMenuScene);
 
-		FXMLLoader lobbyLoader = new FXMLLoader(getClass().getResource("Lobby.fxml"));
-		Scene lobbyScene = new Scene(lobbyLoader.load());
-		ClientData.sceneMap.put("lobby", lobbyScene);
-
-		FXMLLoader matchFoundLoader = new FXMLLoader(getClass().getResource("MatchFound.fxml"));
-		Scene matchFoundScene = new Scene(matchFoundLoader.load());
-		ClientData.sceneMap.put("match", matchFoundScene);
-
-		FXMLLoader gameLoader = new FXMLLoader(getClass().getResource("Game.fxml"));
+		FXMLLoader gameLoader = new FXMLLoader(getClass().getResource("resoureces/Game.fxml"));
 		Scene gameScene = new Scene(gameLoader.load());
 		ClientData.sceneMap.put("game", gameScene);
 
-		FXMLLoader resultLoader = new FXMLLoader(getClass().getResource("Result.fxml"));
+		FXMLLoader resultLoader = new FXMLLoader(getClass().getResource("resources/Result.fxml"));
 		Scene resultScene = new Scene(resultLoader.load());
 		ClientData.sceneMap.put("result", resultScene);
 

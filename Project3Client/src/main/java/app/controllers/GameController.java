@@ -1,3 +1,5 @@
+package app.controllers;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,15 +12,27 @@ import java.util.ResourceBundle;
 
 public class GameController implements Initializable {
 
-    @FXML private Label turnLabel;
-    @FXML private Button returnMainButton;
-    @FXML private Button returnLobbyButton;
+    @FXML private GridPane boardGrid;
+    @FXML private ListView<String> listChat;
+    @FXML private TextField chatField;
 
     ComboBox<Integer> listUsers;
-    ListView<String> listItems;
+    ListView<String> listChat;
+
+    private static final int COLS = 7;
+    private static final int ROWS = 6;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        private Button getButton(int row, int col) {
+            for (javafx.scene.Node node : boardGrid.getChildren()) {
+                if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == col) {
+                    return (Button) node;
+                }
+            }
+            return null;
+        }
+
         if (ClientData.clientConnection == null) {
             ClientData.clientConnection = new Client(data -> {
                 Platform.runLater(() -> {
@@ -34,7 +48,12 @@ public class GameController implements Initializable {
                         case TEXT:
                             listItems.getItems().add(data.recipient+": "+data.message);
                         case GAME_UPDATE:
-                            // update board with player's move
+                            int col = data.col;
+                            int row = data.row;
+                            String playerSymbol = data.message; // like "X" or "O"
+                            Button button = getButton(row, col);
+                            button.setText(playerSymbol);
+                            button.setDisable(true);
                             break;
                         case TURN_UPDATE:
                             // change turnLabel to show whos turn it is
@@ -52,6 +71,16 @@ public class GameController implements Initializable {
                 e.printStackTrace();
             }
         }
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLS; col++) {
+                Button cell = new Button();
+                cell.setPrefSize(55, 55);
+                cell.setStyle("-fx-background-color: white; -fx-border-color: black;");
+                int lastColumn = col;
+                cell.setOnAction(e -> handleColumnClick(lastColumn));
+                boardGrid.add(cell, col, row);
+            }
+        }
     }
 
     @FXML
@@ -63,10 +92,11 @@ public class GameController implements Initializable {
     }
 
     @FXML
-    private void handleReturnLobby() {
-        if (ClientData.sceneMap.containsKey("lobby")) {
-            Stage stage = (Stage) returnLobbyButton.getScene().getWindow();
-            stage.setScene(ClientData.sceneMap.get("lobby"));
+    private void handleSendChat() {
+        String message = chatField.getText();
+        if (!message.isEmpty()) {
+            ClientData.clientConnection.send(new Message(ClientData.username, message, Message.MessageType.TEXT));
+            chatField.clear();
         }
     }
 }
