@@ -7,80 +7,67 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="app.controllers.LoginController">
+<StackPane prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.LoginController">
     <!-- Background Image Layer (first child, rendered at the bottom) -->
-    <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="false">
+    <ImageView fitHeight="500.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="false">
         <effect>
-            <ColorAdjust brightness="-0.15"/>
+            <ColorAdjust brightness="-0.15" />
         </effect>
         <!-- Ensure this path is correct relative to your resources folder -->
-        <Image url="@backgroundImage.gif" backgroundLoading="true"/>
+        <Image backgroundLoading="true" url="@backgroundImage.gif" />
     </ImageView>
 
     <!-- UI Controls Layer (second child, rendered on top) -->
     <!-- Set background to transparent so the ImageView below shows through -->
-    <BorderPane
-            style="-fx-background-color: transparent;" prefHeight="400.0" prefWidth="600.0">
+    <BorderPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: transparent;">
         <top>
             <HBox alignment="CENTER" prefHeight="75.0" prefWidth="600.0">
                 <padding>
-                    <Insets bottom="20" left="20" right="20" top="20"/>
+                    <Insets bottom="20" left="20" right="20" top="20" />
                 </padding>
-                <Label prefHeight="40.0" prefWidth="277.0"
-                       style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 5, 0, 0, 1);"
-                       text="Connect Four Online">
+                <Label prefHeight="40.0" prefWidth="277.0" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 5, 0, 0, 1);" text="Connect Four Online">
                     <font>
-                        <Font name="Lucida Sans Typewriter Regular" size="13.0"/>
+                        <Font name="Lucida Sans Typewriter Regular" size="13.0" />
                     </font>
                 </Label>
             </HBox>
         </top>
 
         <center>
-            <VBox alignment="CENTER" prefHeight="282.0" prefWidth="516.0" spacing="15">
+            <VBox alignment="CENTER" prefHeight="282.0" prefWidth="600.0" spacing="15">
                 <padding>
-                    <Insets top="5" bottom="5"/>
+                    <Insets bottom="5" top="5" />
                 </padding>
                 <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <!-- Ensure this path is correct relative to your resources folder -->
-                        <Image url="@connect4logo.png" backgroundLoading="true"/>
+                        <Image backgroundLoading="true" url="@connect4logo.png" />
                     </image>
                 </ImageView>
                 <!-- Added Host and Port Fields -->
-                <TextField fx:id="hostField" maxWidth="250" promptText="Server Host"
-                           style="-fx-background-radius: 8; -fx-padding: 8; -fx-background-color: white; -fx-opacity: 0.9;"/>
-                <TextField fx:id="portField" maxWidth="100" promptText="Port"
-                           style="-fx-background-radius: 8; -fx-padding: 8; -fx-background-color: white; -fx-opacity: 0.9;"/>
-                <TextField fx:id="usernameField" maxWidth="250" promptText="Enter Username"
-                           style="-fx-background-radius: 8; -fx-padding: 8; -fx-background-color: white; -fx-opacity: 0.9;"/>
-                <Button fx:id="connectButton" onAction="#handleConnectButton" prefHeight="28.0" prefWidth="128.0"
-                        style="-fx-background-color: #4a90e2; -fx-text-fill: white; -fx-background-radius: 5;"
-                        text="Connect!">
+                <TextField fx:id="hostField" maxWidth="250" promptText="Server Host" style="-fx-background-radius: 8; -fx-padding: 8; -fx-background-color: white; -fx-opacity: 0.9;" />
+                <TextField fx:id="portField" maxWidth="100" promptText="Port" style="-fx-background-radius: 8; -fx-padding: 8; -fx-background-color: white; -fx-opacity: 0.9;" />
+                <TextField fx:id="usernameField" maxWidth="250" promptText="Enter Username" style="-fx-background-radius: 8; -fx-padding: 8; -fx-background-color: white; -fx-opacity: 0.9;" />
+                <Button fx:id="connectButton" onAction="#handleConnectButton" prefHeight="34.0" prefWidth="138.0" style="-fx-background-color: #4a90e2; -fx-text-fill: white; -fx-background-radius: 5;" text="Connect!">
                     <font>
-                        <Font name="Lucida Sans Typewriter Bold" size="13.0"/>
+                        <Font name="Lucida Sans Typewriter Bold" size="13.0" />
                     </font>
                 </Button>
                 <!-- Added Progress Indicator -->
-                <ProgressIndicator fx:id="progressIndicator" maxWidth="120" visible="false"/>
-                <Label fx:id="errorLabel"
-                       style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 2, 0, 0, 1); -fx-font-weight: bold;"
-                       text="Error Message Area" textFill="#ff8080" visible="false" wrapText="true"/>
+                <ProgressIndicator fx:id="progressIndicator" maxWidth="120" visible="false" />
+                <Label fx:id="errorLabel" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 2, 0, 0, 1); -fx-font-weight: bold;" text="Error Message Area" textFill="#ff8080" visible="false" wrapText="true" />
             </VBox>
         </center>
 
         <bottom>
-            <HBox alignment="BOTTOM_RIGHT" prefHeight="39.0" prefWidth="600.0">
+            <HBox alignment="BOTTOM_RIGHT" prefHeight="51.0" prefWidth="600.0">
                 <padding>
-                    <Insets bottom="15" left="15" right="15" top="15"/>
+                    <Insets bottom="15" left="15" right="15" top="15" />
                 </padding>
                 <!-- Added fx:id and corrected onAction -->
-                <Button fx:id="quitButton" onAction="#handleQuit" prefHeight="29.0" prefWidth="89.0"
-                        style="-fx-background-color: rgba(212,81,81,0.7); -fx-background-radius: 5;" text="Quit Game"
-                        textFill="white">
+                <Button fx:id="quitButton" onAction="#handleQuit" prefHeight="29.0" prefWidth="89.0" style="-fx-background-color: rgba(212,81,81,0.7); -fx-background-radius: 5;" text="Quit Game" textFill="white">
                     <font>
-                        <Font name="System Bold" size="12.8"/>
+                        <Font name="System Bold" size="12.8" />
                     </font>
                 </Button>
             </HBox>
