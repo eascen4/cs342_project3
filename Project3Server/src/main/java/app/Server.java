@@ -4,10 +4,7 @@ import app.controllers.ServerDashboardController;
 import app.dto.PlayerInfo;
 import app.dto.messages.MessageType;
 import app.dto.messages.BaseMessage;
-import app.dto.messages.client.ChatMessage;
-import app.dto.messages.client.LoginRequest;
-import app.dto.messages.client.MatchRequest;
-import app.dto.messages.client.MoveRequest;
+import app.dto.messages.client.*;
 import app.dto.messages.server.ErrorResponse;
 import app.dto.messages.server.GameStartNotification;
 import app.dto.messages.server.LoginResponse;
@@ -211,14 +208,14 @@ public class Server {
 					ChatMessage chatMsg = objectMapper.readValue(message, ChatMessage.class);
 					handleChatMessage(chatMsg, client);
 					break;
-//				case REMATCH_REQUEST:
-//					RematchRequest rematchReq = objectMapper.readValue(message, RematchRequest.class);
-//					handleRematchRequest(rematchReq, client);
-//					break;
-//				case LEAVE_GAME: // Assuming type is LEAVE_GAME
-//					LeaveGameRequest leaveReq = objectMapper.readValue(message, LeaveGameRequest.class);
-//					handleLeaveGame(leaveReq, client);
-//					break;
+				case REMATCH_REQUEST:
+					RematchRequest rematchReq = objectMapper.readValue(message, RematchRequest.class);
+					handleRematchRequest(rematchReq, client);
+					break;
+				case LEAVE_GAME_REQUEST:
+					LeaveGameRequest leaveReq = objectMapper.readValue(message, LeaveGameRequest.class);
+					handleLeaveGame(leaveReq, client);
+					break;
 //				case CHALLENGE_REQUEST:
 //					ChallengeRequest challengeReq = objectMapper.readValue(message, ChallengeRequest.class);
 //					handleChallengeRequest(challengeReq, client);
@@ -386,6 +383,41 @@ public class Server {
 					.filter(h -> h != sender && h.getCurrentGameSession() == null)
 					.forEach(h -> h.sendMessage(broadcastMsg));
 		}
+	}
+
+	public void handleRematchRequest(RematchRequest msg, ClientRunnable sender) {
+		GameSession session = sender.getCurrentGameSession();
+
+		if (session == null) {
+			log.warn("Client [{}] sent REMATCH_REQUEST but is not associated with a game session.", sender.getUsername());
+			sender.sendMessage(new ErrorResponse("Cannot request rematch: Not in a recently finished game session."));
+			return;
+		}
+
+		if (msg.getGameId() == null || !msg.getGameId().equals(session.getGameId())) {
+			log.warn("Client [{}] sent REMATCH_REQUEST for game {} but is associated with session {}.",
+					sender.getUsername(), msg.getGameId(), session.getGameId());
+			sender.sendMessage(new ErrorResponse("Rematch request game ID mismatch."));
+			return;
+		}
+
+		log.info("Forwarding rematch request from [{}] for game {}", sender.getUsername(), session.getGameId());
+
+		session.handleRematchRequest(sender);
+	}
+
+	private void handleLeaveGame(LeaveGameRequest msg, ClientRunnable sender) {
+		log.info("User [{}] requested to leave.", sender.getUsername());
+
+		GameSession currentSession = sender.getCurrentGameSession();
+		if (currentSession != null) {
+			log.info("User [{}] is leaving active game session {}", sender.getUsername(), currentSession.getGameId());
+			currentSession.playerLeft(sender);
+
+		}
+
+		broadcastUserListUpdate();
+		updateUILists();
 	}
 	// ------------------------
 

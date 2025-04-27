@@ -39,6 +39,7 @@ public class Client {
 
 	@Getter ConnectionState connectionState = ConnectionState.DISCONNECTED;
 	@Getter String currUsername;
+	@Getter private int lastGamePlayerId = 0;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 	public enum ConnectionState { DISCONNECTED, CONNECTING, CONNECTED, VERIFIED}
@@ -103,6 +104,7 @@ public class Client {
 					break;
 				case GAME_START:
 					GameStartNotification gameStart = objectMapper.readValue(jsonMessage, GameStartNotification.class);
+					this.lastGamePlayerId = gameStart.getPlayerId();
 					guiClient.showGameScene(gameStart);
 					break;
 				case GAME_UPDATE:
@@ -116,7 +118,7 @@ public class Client {
 						GameEndNotification gameOver = objectMapper.readValue(jsonMessage, GameEndNotification.class);
 						guiClient.getGameController().handleGameOver(gameOver);
 
-						guiClient.showResultScene(gameOver);
+						guiClient.showResultScene(gameOver, this.lastGamePlayerId);
 					}
 					break;
 				case CHAT_NOTIFICATION:
@@ -142,10 +144,10 @@ public class Client {
 						RematchNotification rematchGame = objectMapper.readValue(jsonMessage, RematchNotification.class);
 						guiClient.getGameController().handleRematchReceived(rematchGame);
 					}
-//					else if (guiClient.isResultSceneActive() && guiClient.getResultController() != null) {
-//						RematchNotification rematchResult = objectMapper.readValue(jsonMessage, RematchNotification.class);
-//						guiClient.getResultController().handleRematchReceived(rematchResult); // Add this method to ResultController
-//					}
+					else if (guiClient.isResultSceneActive() && guiClient.getResultController() != null) {
+						RematchNotification rematchResult = objectMapper.readValue(jsonMessage, RematchNotification.class);
+						guiClient.getResultController().handleRematchReceived(rematchResult); // Add this method to ResultController
+					}
 					break;
 				case WAITING_FOR_PLAYERS:
 					if (guiClient.getLobbyController() != null && guiClient.isLobbySceneActive()) {
@@ -159,19 +161,15 @@ public class Client {
 						guiClient.getGameController().handleForfeit(forfeit);
 					}
 					break;
-//				case REMATCH_REQUEST_UPDATE:
-//					// Can be received in Game or Result scene
-//					if (guiClient.isGameSceneActive() && guiClient.getGameController() != null) {
-//						// GameController might show "Waiting..."
-//					} else if (guiClient.isResultSceneActive() && guiClient.getResultController() != null) {
-//						guiClient.getResultController().handleRematchAcknowledged();
-//					}
-//					break;
+				case REMATCH_REQUEST_UPDATE:
+					if (guiClient.isGameSceneActive() && guiClient.getGameController() != null) {
+					} else if (guiClient.isResultSceneActive() && guiClient.getResultController() != null) {
+						guiClient.getResultController().handleRematchAcknowledged();
+					}
+					break;
 				case SERVER_SHUTDOWN:
 					handleDisconnect();
 					break;
-				// Add cases for other Server -> Client message types
-
 				default:
 					log.warn("Unhandled message type received from server: {}", type);
 			}

@@ -5,20 +5,14 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
-import app.ClientData;
 import app.Client;
-import app.dto.messages.BaseMessage;
-import app.dto.messages.MessageType;
 import app.dto.messages.server.LoginResponse;
 import app.dto.messages.client.LoginRequest;
 import lombok.Setter;
 
 
 import java.net.URL;
-import java.util.HashMap;
 import java.util.ResourceBundle;
 
 

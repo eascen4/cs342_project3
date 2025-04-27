@@ -36,7 +36,7 @@
         </Button>
 
         <VBox alignment="CENTER" spacing="10">
-            <Button fx:id="quitButton" onAction="#handleQuit" prefHeight="24.0" prefWidth="163.0" style="-fx-background-color: #4a90e2; -fx-text-fill: white;" text="Quit Game">
+            <Button fx:id="returnLabel" onAction="#handleReturnToLobby" prefHeight="24.0" prefWidth="163.0" style="-fx-background-color: #4a90e2; -fx-text-fill: white;" text="Quit Game">
                 <font>
                     <Font name="Lucida Sans Typewriter Bold" size="13.0" />
                 </font>

@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 public class GuiClient extends Application {
@@ -71,8 +72,14 @@ public class GuiClient extends Application {
 	}
 
 	public void showResultScene(GameEndNotification gameOverData) {
+
 		currSceneType = SceneType.RESULT;
-		loadScene("/Result.fxml", gameOverData);
+		loadScene("/Result.fxml",  Map.of("gameOverData", gameOverData, "myPlayerId", client.getLastGamePlayerId()));
+	}
+
+	public void showResultScene(GameEndNotification gameOverData, int playerId) {
+		currSceneType = SceneType.RESULT;
+		loadScene("/Result.fxml",  Map.of("gameOverData", gameOverData, "myPlayerId", playerId));
 	}
 
 	private void loadScene(String path, Object userData) {
@@ -108,14 +115,25 @@ public class GuiClient extends Application {
 					gameController.initializeGame((GameStartNotification) userData);
 				}
 			}
-//			else if (controller instanceof ResultController) {
-//				resultController = (ResultController) controller;
-//				resultController.setApp(this);
-//				resultController.setNetworkService(networkService);
-//				if (userData instanceof GameEndNotification) {
-//					resultController.initializeData((GameEndNotification) userData);
-//				}
-//			}
+			else if (controller instanceof ResultController) {
+				resultController = (ResultController) controller;
+				resultController.setGuiClient(this);
+				resultController.setClient(client);
+				log.info("ResultController configured.");
+				if (userData instanceof Map) {
+					Map<String, Object> dataMap = (Map<String, Object>) userData;
+					GameEndNotification gameOverData = (GameEndNotification) dataMap.get("gameOverData");
+					Integer myPlayerId = (Integer) dataMap.get("myPlayerId");
+					if (gameOverData != null && myPlayerId != null) {
+						log.debug("Calling initializeData with GameEndNotification and Player ID {}.", myPlayerId);
+						resultController.initializeData(gameOverData, myPlayerId);
+					} else {
+						log.error("Result scene loaded but missing game over data or player ID in userData map.");
+						showLobby();
+						return;
+					}
+				}
+			}
 
 			Scene scene = primaryStage.getScene();
 			if (scene == null) {

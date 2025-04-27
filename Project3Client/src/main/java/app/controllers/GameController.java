@@ -20,15 +20,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.stage.Stage;
-import app.ClientData;
 import app.Client;
-import app.dto.messages.BaseMessage;
-import app.dto.messages.MessageType;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -245,14 +240,6 @@ public class GameController implements Initializable {
             chatList.add(formattedMessage);
             listChat.scrollTo(chatList.size() - 1);
         });
-    }
-
-    @FXML
-    private void handleReturnMain() {
-        if (ClientData.sceneMap.containsKey("main")) {
-            Stage stage = (Stage) leaveGameButton.getScene().getWindow();
-            stage.setScene(ClientData.sceneMap.get("main"));
-        }
     }
 
     @FXML
