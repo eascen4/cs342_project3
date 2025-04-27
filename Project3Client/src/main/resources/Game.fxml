@@ -5,7 +5,6 @@
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
 <BorderPane prefHeight="400" prefWidth="600" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.GameController">
 
@@ -25,7 +24,7 @@
             <padding>
                 <Insets bottom="10" top="10" />
             </padding>
-            <Label fx:id="turnLabel" prefHeight="42.0" prefWidth="300.0" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #d27142; -fx-effect: dropshadow(gaussian, #1b1b1b, 2, 0, 0, 1);" text="        Waiting for game start..." />
+            <Label prefHeight="42.0" prefWidth="206.0" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #d27142; -fx-effect: dropshadow(gaussian, #1b1b1b, 2, 0, 0, 1);" text="      Connect 4 to win!" />
         </VBox>
     </top>
 
