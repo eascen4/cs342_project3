@@ -8,4 +8,5 @@ public class ClientData {
     public static HashMap<String, Scene> sceneMap = new HashMap<>();
     public static String username;
     public static String gameResult;
+    public static String gameId;
 }

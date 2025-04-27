@@ -10,6 +10,8 @@ import app.ClientData;
 import app.Client;
 import app.dto.messages.BaseMessage;
 import app.dto.messages.MessageType;
+import app.dto.messages.client.RematchRequest;
+
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -54,11 +56,8 @@ public class ResultController implements Initializable {
 
     @FXML
     private void handleRematch() {
-        ClientData.clientConnection.send(new Message(
-                ClientData.username,
-                "REMATCH_REQUEST",
-                MessageType.REMATCH
-        ));
+        RematchRequest rematchRequest = new RematchRequest(ClientData.gameId);
+        ClientData.clientConnection.send(rematchRequest);
         rematchButton.setDisable(true);
         rematchButton.setText("Waiting for opponent...");
     }

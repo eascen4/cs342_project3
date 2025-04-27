@@ -12,15 +12,15 @@ public class GuiClient extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		FXMLLoader mainmenuLoader = new FXMLLoader(getClass().getResource("resources/MainMenu.fxml"));
+		FXMLLoader mainmenuLoader = new FXMLLoader(getClass().getResource("/MainMenu.fxml"));
 		Scene mainMenuScene = new Scene(mainmenuLoader.load());
 		ClientData.sceneMap.put("main", mainMenuScene);
 
-		FXMLLoader gameLoader = new FXMLLoader(getClass().getResource("resoureces/Game.fxml"));
+		FXMLLoader gameLoader = new FXMLLoader(getClass().getResource("/Game.fxml"));
 		Scene gameScene = new Scene(gameLoader.load());
 		ClientData.sceneMap.put("game", gameScene);
 
-		FXMLLoader resultLoader = new FXMLLoader(getClass().getResource("resources/Result.fxml"));
+		FXMLLoader resultLoader = new FXMLLoader(getClass().getResource("/Result.fxml"));
 		Scene resultScene = new Scene(resultLoader.load());
 		ClientData.sceneMap.put("result", resultScene);
 

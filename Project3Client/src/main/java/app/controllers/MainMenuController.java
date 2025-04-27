@@ -10,6 +10,9 @@ import app.ClientData;
 import app.Client;
 import app.dto.messages.BaseMessage;
 import app.dto.messages.MessageType;
+import app.dto.messages.server.LoginResponse;
+import app.dto.messages.client.LoginRequest;
+
 
 import java.net.URL;
 import java.util.HashMap;
@@ -29,16 +32,18 @@ public class MainMenuController implements Initializable {
             ClientData.clientConnection = new Client(data -> {
                 Platform.runLater(() -> {
                     switch (data.getType()) {
-                        case LOGIN_SUCCESS:
-                            System.out.println("Login success!");
-                            errorLabel.setVisible(false);
-                            ClientData.username = usernameField.getText();
-                            goToLobby();
-                            break;
-
-                        case LOGIN_FAILURE:
-                            System.out.println("Login failed :(");
-                            errorLabel.setVisible(true);
+                        case LOGIN_RESPONSE:
+                            LoginResponse loginResponse = (LoginResponse) data;
+                            if (loginResponse.isWasSuccess()) {
+                                System.out.println("Login success!");
+                                errorLabel.setVisible(false);
+                                ClientData.username = loginResponse.getUsername();
+                                goToLobby();
+                            } else {
+                                System.out.println("Login failed :(");
+                                errorLabel.setText(loginResponse.getMessage());
+                                errorLabel.setVisible(true);
+                            }
                             break;
                     }
                 });
@@ -55,7 +60,7 @@ public class MainMenuController implements Initializable {
     private void handleConnect() {
         String username = usernameField.getText();
         if (!username.isEmpty()) {
-            Message loginAttempt = new Message(username, MessageType.LOGIN_ATTEMPT);
+            LoginRequest loginAttempt = new LoginRequest(username);
             ClientData.clientConnection.send(loginAttempt);
         }
     }

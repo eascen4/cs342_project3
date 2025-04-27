@@ -7,7 +7,7 @@
 
 <VBox xmlns="http://javafx.com/javafx/17.0.12"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="ResultController"
+      fx:controller="app.controllers.ResultController"
       alignment="TOP_CENTER" spacing="20" style="-fx-background-color: #f1eeee;" prefHeight="400" prefWidth="600">
 
     <padding>
