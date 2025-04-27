@@ -57,7 +57,7 @@ public class ResultController implements Initializable {
     @FXML
     private void handleRematch() {
         RematchRequest rematchRequest = new RematchRequest(ClientData.gameId);
-        ClientData.clientConnection.send(rematchRequest);
+        // ClientData.clientConnection.send(rematchRequest);
         rematchButton.setDisable(true);
         rematchButton.setText("Waiting for opponent...");
     }

@@ -55,24 +55,18 @@ public class ClientRunnable implements Runnable{
             this.out = out;
             socket.setTcpNoDelay(true);
 
-        } catch(Exception e) {
-            log.error("Oops something went wrong when configuring in and out with client {}: {}", clientId, e.getMessage());
-        }
-
-        try {
             String line;
             while((line = in.readLine()) != null) {
                 try {
-                    BaseMessage message = mapper.readValue(line, BaseMessage.class);
-                    server.processMessage(message, this);
-                } catch(JsonProcessingException e) {
+                    server.processJsonMessage(line, this);
+                } catch(Exception e) {
                     log.error("Could not parse message from client [{}]. Class not found.", clientId, e);
                     break;
                 }
             }
         } catch(SocketException e) {
             log.error("Client [{}] disconnected ({})", clientId, e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("Unexpected error when reading message from client [{}].", clientId, e);
         }
 

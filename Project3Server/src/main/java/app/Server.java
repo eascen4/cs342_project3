@@ -4,9 +4,13 @@ import app.controllers.ServerDashboardController;
 import app.dto.messages.MessageType;
 import app.dto.messages.BaseMessage;
 import app.dto.messages.client.ChatMessage;
+import app.dto.messages.client.LoginRequest;
 import app.dto.messages.client.MatchRequest;
 import app.dto.messages.client.MoveRequest;
 import app.dto.messages.server.ErrorResponse;
+import app.dto.messages.server.LoginResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import lombok.Getter;
@@ -42,6 +46,8 @@ public class Server {
 	private ExecutorService clientExecutor;
 	private ServerSocket serverSocket;
 	private Thread listenerThread;
+
+	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@Setter
 	private ServerDashboardController serverDashboardController;
@@ -169,38 +175,104 @@ public class Server {
 	 * @param message - The message object
 	 * @param client - client that sent the message (null if server sent)
 	 */
-	protected void processMessage(BaseMessage message, ClientRunnable client) {
+	protected void processJsonMessage(String message, ClientRunnable client) {
 		if(!isRunning) return;
 
-
+		BaseMessage baseMsg = null; // To hold the initially parsed message for type info
 		try {
-			switch (message.getType()) {
-				case LOGIN_REQUEST:
+			// 1. Parse into BaseMessage just to get the type safely
+			baseMsg = objectMapper.readValue(message, BaseMessage.class);
+			MessageType type = baseMsg.getType();
 
+			if (type == null) {
+				log.error("Received message with null type from client [{}]: {}", client.getClientId(), message);
+				client.sendMessage(new ErrorResponse("Invalid message: 'type' field is missing."));
+				return;
+			}
+
+			// 2. Switch on the type and deserialize DIRECTLY into the specific class
+			switch (type) {
+				case LOGIN_REQUEST:
+					// Deserialize the original JSON string directly to LoginRequest
+					LoginRequest loginReq = objectMapper.readValue(message, LoginRequest.class);
+					handleLoginRequest(loginReq, client);
 					break;
 				case MATCH_REQUEST:
+					MatchRequest matchReq = objectMapper.readValue(message, MatchRequest.class);
+					handleMatchRequest(matchReq, client);
 					break;
 				case MOVE_REQUEST:
+					MoveRequest moveReq = objectMapper.readValue(message, MoveRequest.class);
+					handleMoveRequest(moveReq, client);
 					break;
 				case CHAT_MESSAGE:
+					ChatMessage chatMsg = objectMapper.readValue(message, ChatMessage.class);
+					handleChatMessage(chatMsg, client);
 					break;
-				case REMATCH_REQUEST:
-					break;
-				case LEAVE_GAME_REQUEST:
-					break;
-				case CHALLENGE_REQUEST:
-					break;
-				case CHALLENGE_RESPONSE:
-					break;
+//				case REMATCH_REQUEST:
+//					RematchRequest rematchReq = objectMapper.readValue(message, RematchRequest.class);
+//					handleRematchRequest(rematchReq, client);
+//					break;
+//				case LEAVE_GAME: // Assuming type is LEAVE_GAME
+//					LeaveGameRequest leaveReq = objectMapper.readValue(message, LeaveGameRequest.class);
+//					handleLeaveGame(leaveReq, client);
+//					break;
+//				case CHALLENGE_REQUEST:
+//					ChallengeRequest challengeReq = objectMapper.readValue(message, ChallengeRequest.class);
+//					handleChallengeRequest(challengeReq, client);
+//					break;
+//				case CHALLENGE_RESPONSE:
+//					ChallengeResponse challengeRes = objectMapper.readValue(message, ChallengeResponse.class);
+//					handleChallengeResponse(challengeRes, client);
+//					break;
+				// Add cases for any other Client -> Server message types
+
 				default:
-					log.warn("Message type {} not supported", message.getType());
+					log.warn("Received unsupported message type {} from client [{}]: {}", type, client.getClientId(), message);
+					client.sendMessage(new ErrorResponse("Unsupported message type: " + type));
 			}
+		} catch (JsonProcessingException jsonEx) {
+			// Error during JSON parsing/deserialization
+			log.error("JSON Error processing message from client [{}]: {}", client.getClientId(), jsonEx.getMessage());
+			client.sendMessage(new ErrorResponse("Invalid message format: " + jsonEx.getMessage()));
 		} catch (Exception e) {
-			client.sendMessage(new ErrorResponse("Internal Server Error"));
+			// Catch other unexpected exceptions during handling
+			MessageType typeInfo = (baseMsg != null) ? baseMsg.getType() : MessageType.SERVER_SHUTDOWN; // Use UNKNOWN if initial parse failed
+			log.error("!!! Unexpected Internal Server Error processing message type {} for client [{}] !!!",
+					typeInfo, client.getClientId(), e); // Log the full stack trace
+			client.sendMessage(new ErrorResponse("Internal Server Error processing request. Please contact support."));
 		}
 	}
 
 	// --- Message Handlers ---
+
+	private synchronized void handleLoginRequest(LoginRequest msg, ClientRunnable handler) {
+		String requestedUsername = msg.username;
+		log.info("Username: {}", requestedUsername);
+		if (handler.getUsername() != null) {
+			handler.sendMessage(new ErrorResponse("Already logged in as " + handler.getUsername()));
+			return;
+		}
+		if (requestedUsername == null || requestedUsername.trim().isEmpty() || requestedUsername.length() > 16) {
+			handler.sendMessage(new LoginResponse(false, "Invalid username (must be 1-16 chars).", null));
+			return;
+		}
+		// Check uniqueness (case-insensitive)
+		if (clientsByUsername.keySet().stream().anyMatch(u -> u.equalsIgnoreCase(requestedUsername))) {
+			handler.sendMessage(new LoginResponse(false, "Username '" + requestedUsername + "' is already taken.", null));
+			return;
+		}
+
+		// Register username
+		handler.setUsername(requestedUsername);
+		clientsByUsername.put(requestedUsername, handler);
+
+        log.info("User '{}' logged in (Client ID: {})", requestedUsername, handler.getClientId());
+		handler.sendMessage(new LoginResponse(true, "Login successful!", requestedUsername));
+
+		broadcastUserListUpdate();
+		updateUILists(); // Update server GUI
+	}
 
 	private synchronized void handleMatchRequest(MatchRequest msg, ClientRunnable requester) {
 		if (requester.getCurrentGameSession() != null) {
@@ -235,7 +307,6 @@ public class Server {
 				broadcastUserListUpdate(); // Update statuses to IN_GAME
 				updateUILists();
 			} else {
-				// Should not happen with drainTo if size check passed, but handle defensively
 				log.warn("Could not drain enough players for {}-player match, putting back.", playerCount);
 				participants.forEach(queue::offer); // Put them back
 				requester.sendMessage(new BaseMessage(MessageType.WAITING_FOR_PLAYERS)); // Define this DTO if needed

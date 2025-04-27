@@ -5,25 +5,50 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox xmlns="http://javafx.com/javafx/17.0.12"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="app.controllers.ResultController"
-      alignment="TOP_CENTER" spacing="20" style="-fx-background-color: #f1eeee;" prefHeight="400" prefWidth="600">
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.effect.ColorAdjust?>
+<StackPane prefHeight="400" prefWidth="600" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.ResultController">
 
-    <padding>
-        <Insets top="40" left="20" right="20" bottom="20"/>
-    </padding>
+    <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="false" preserveRatio="false">
+        <image>
+            <Image url="@resultImage.gif" />
+        </image>
+        <effect>
+            <ColorAdjust brightness="-0.15" />
+        </effect>
+    </ImageView>
 
-    <Label fx:id="resultLabel" text="Game ended" style="-fx-font-size: 24px; -fx-font-weight: bold;">
-        <font>
-            <Font name="Lucida Sans Typewriter Regular" size="14.0"/>
-        </font>
-    </Label>
+    <VBox alignment="TOP_CENTER" prefHeight="400" prefWidth="600" spacing="20" style="-fx-background-color: transparent;">
+        <padding>
+            <Insets bottom="20" left="20" right="20" top="40" />
+        </padding>
 
-    <Button fx:id="rematchButton" onAction="#handleRematch" text="Play again with Opponent" prefWidth="220" />
+        <Label fx:id="resultLabel" prefHeight="35.0" prefWidth="144.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 5, 0, 0, 1);" text="Game ended">
+            <font>
+                <Font name="Lucida Sans Typewriter Regular" size="16.0" />
+            </font>
+        </Label>
 
-    <VBox spacing="10" alignment="CENTER">
-        <Button fx:id="returnMainButton" onAction="#handleReturnMain" text="Return to Main Menu" prefWidth="180" />
+        <Button fx:id="rematchButton" onAction="#handleRematch" prefWidth="220" style="-fx-background-color: #4a90e2; -fx-text-fill: white;" text="Play again with Opponent">
+            <font>
+                <Font name="Lucida Sans Typewriter Bold" size="13.0" />
+            </font>
+        </Button>
+
+        <VBox alignment="CENTER" spacing="10">
+            <Button fx:id="returnMainButton" onAction="#handleReturnMain" prefWidth="180" style="-fx-background-color: #4a90e2; -fx-text-fill: white;" text="Return to Main Menu">
+                <font>
+                    <Font name="Lucida Sans Typewriter Bold" size="13.0" />
+                </font>
+            </Button>
+            <Button fx:id="returnLobbyButton" onAction="#handleReturnLobby" prefWidth="180" style="-fx-background-color: #4a90e2; -fx-text-fill: white;" text="Return to Lobby">
+                <font>
+                    <Font name="Lucida Sans Typewriter Bold" size="13.0" />
+                </font>
+            </Button>
+        </VBox>
+
     </VBox>
 
-</VBox>
+</StackPane>
