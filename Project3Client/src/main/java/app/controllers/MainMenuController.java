@@ -6,6 +6,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import app.ClientData;
+import app.Client;
+import app.dto.messages.BaseMessage;
+import app.dto.messages.MessageType;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -24,7 +28,7 @@ public class MainMenuController implements Initializable {
         if (ClientData.clientConnection == null) {
             ClientData.clientConnection = new Client(data -> {
                 Platform.runLater(() -> {
-                    switch (data.type) {
+                    switch (data.getType()) {
                         case LOGIN_SUCCESS:
                             System.out.println("Login success!");
                             errorLabel.setVisible(false);

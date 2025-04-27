@@ -11,4 +11,10 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BaseMessage {
     private MessageType type;
+
+    public MessageType getType() {
+        return type;
+    }
+
+
 }

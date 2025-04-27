@@ -1,11 +1,13 @@
 package app;
 
+import app.dto.messages.BaseMessage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 import java.util.function.Consumer;
+import app.dto.messages.BaseMessage;
 
 
 public class Client extends Thread{
@@ -13,9 +15,9 @@ public class Client extends Thread{
 	Socket socketClient;
 	ObjectOutputStream out;
 	ObjectInputStream in;
-	private final Consumer<Message> callback;
+	private final Consumer<BaseMessage> callback;
 	
-	Client(Consumer<Message> callback){
+	public Client(Consumer<BaseMessage> callback){
 		this.callback = callback;
 	}
 
@@ -30,7 +32,7 @@ public class Client extends Thread{
 	public void run() {
 		try {
 			while (true) {
-				Message message = (Message) in.readObject();
+				BaseMessage message = (BaseMessage) in.readObject();
 				callback.accept(message);
 			}
 		} catch (Exception e) {
@@ -39,7 +41,7 @@ public class Client extends Thread{
 	}
 
 
-	public void send(Message data) {
+	public void send(BaseMessage data) {
 		try {
 			out.writeObject(data);
 		} catch (IOException e) {

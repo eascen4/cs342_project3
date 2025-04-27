@@ -6,6 +6,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import app.ClientData;
+import app.Client;
+import app.dto.messages.BaseMessage;
+import app.dto.messages.MessageType;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -15,52 +19,34 @@ public class GameController implements Initializable {
     @FXML private GridPane boardGrid;
     @FXML private ListView<String> listChat;
     @FXML private TextField chatField;
+    @FXML private Label turnLabel;
+    @FXML private Button returnMainButton;
 
-    ComboBox<Integer> listUsers;
-    ListView<String> listChat;
+    private ComboBox<Integer> listUsers;
+    private boolean myTurn = false;
 
     private static final int COLS = 7;
     private static final int ROWS = 6;
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        private Button getButton(int row, int col) {
-            for (javafx.scene.Node node : boardGrid.getChildren()) {
-                if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == col) {
-                    return (Button) node;
-                }
-            }
-            return null;
-        }
-
+        updateTurnLabel();
         if (ClientData.clientConnection == null) {
             ClientData.clientConnection = new Client(data -> {
                 Platform.runLater(() -> {
-                    switch (data.type) {
-                        case NEWUSER:
-                            listUsers.getItems().add(data.recipient);
-                            listItems.getItems().add(data.recipient + " has joined!");
+                    switch (data.getType()) {
+                        case CHAT_NOTIFICATION:
+                            // implement
                             break;
-                        case DISCONNECT:
-                            listUsers.getItems().remove(data.recipient);
-                            listItems.getItems().add(data.recipient + " has disconnected!");
-                            break;
-                        case TEXT:
-                            listItems.getItems().add(data.recipient+": "+data.message);
                         case GAME_UPDATE:
-                            int col = data.col;
-                            int row = data.row;
-                            String playerSymbol = data.message; // like "X" or "O"
-                            Button button = getButton(row, col);
-                            button.setText(playerSymbol);
-                            button.setDisable(true);
-                            break;
-                        case TURN_UPDATE:
-                            // change turnLabel to show whos turn it is
+                            // implement
                             break;
                         case GAME_END:
-                            Stage stage = (Stage) turnLabel.getScene().getWindow();
-                            stage.setScene(ClientData.sceneMap.get("result"));
+                            // show turn label
+                        case FORFEIT_NOTIFICATION:
+                        case SERVER_SHUTDOWN:
+                            // implement
                             break;
                     }
                 });
@@ -77,9 +63,19 @@ public class GameController implements Initializable {
                 cell.setPrefSize(55, 55);
                 cell.setStyle("-fx-background-color: white; -fx-border-color: black;");
                 int lastColumn = col;
-                cell.setOnAction(e -> handleColumnClick(lastColumn));
+                // fix
                 boardGrid.add(cell, col, row);
             }
+        }
+    }
+
+    private void updateTurnLabel() {
+        if (myTurn) {
+            turnLabel.setText("Your turn");
+            turnLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+        } else {
+            turnLabel.setText("Opponent's turn");
+            turnLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
         }
     }
 
@@ -95,7 +91,7 @@ public class GameController implements Initializable {
     private void handleSendChat() {
         String message = chatField.getText();
         if (!message.isEmpty()) {
-            ClientData.clientConnection.send(new Message(ClientData.username, message, Message.MessageType.TEXT));
+            // send chat
             chatField.clear();
         }
     }

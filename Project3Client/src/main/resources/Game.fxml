@@ -8,14 +8,9 @@
 
     <top>
         <VBox alignment="CENTER">
-            <Label prefHeight="30.0" prefWidth="183.0" style="-fx-font-size: 20; -fx-text-fill: black;" text="  Player1 vs Player2">
+            <Label fx:id="turnLabel" prefHeight="42.0" prefWidth="206.0" style="-fx-font-weight: bold;" text="    Waiting for game start...">
                 <font>
-                    <Font name="Lucida Sans Typewriter Bold" size="12.800000190734863" />
-                </font>
-            </Label>
-            <Label fx:id="turnLabel" prefHeight="19.0" prefWidth="164.0" style="-fx-text-fill: black;" text="Your turn/opponent's turn">
-                <font>
-                    <Font name="System Bold" size="13.0" />
+                    <Font name="System Bold" size="15.0" />
                 </font>
             </Label>
         </VBox>
@@ -28,7 +23,7 @@
 
             <!-- Chat System -->
             <VBox alignment="TOP_CENTER" spacing="10">
-                <ListView fx:id="listChat" prefHeight="252.0" prefWidth="210.0" />
+                <ListView fx:id="listChat" prefHeight="251.0" prefWidth="210.0" />
                 <HBox spacing="5">
                     <TextField fx:id="chatField" promptText="Enter message..." HBox.hgrow="ALWAYS" />
                     <Button onAction="#handleSendChat" text="Send" />

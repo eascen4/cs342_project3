@@ -14,13 +14,13 @@
         <Insets top="40" left="20" right="20" bottom="20"/>
     </padding>
 
-    <Label fx:id="resultLabel" text="You Win! or You Lose! or It's a Draw!" style="-fx-font-size: 24px; -fx-font-weight: bold;">
+    <Label fx:id="resultLabel" text="Game ended" style="-fx-font-size: 24px; -fx-font-weight: bold;">
         <font>
             <Font name="Lucida Sans Typewriter Regular" size="14.0"/>
         </font>
     </Label>
 
-    <Button fx:id="rematchButton" onAction="#handleRematch" text="Play again with Player" prefWidth="220" />
+    <Button fx:id="rematchButton" onAction="#handleRematch" text="Play again with Opponent" prefWidth="220" />
 
     <VBox spacing="10" alignment="CENTER">
         <Button fx:id="returnMainButton" onAction="#handleReturnMain" text="Return to Main Menu" prefWidth="180" />
