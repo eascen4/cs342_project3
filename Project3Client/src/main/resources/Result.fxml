@@ -2,12 +2,11 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.effect.ColorAdjust?>
 <StackPane prefHeight="400" prefWidth="600" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.ResultController">
 
     <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="false" preserveRatio="false">
@@ -37,12 +36,7 @@
         </Button>
 
         <VBox alignment="CENTER" spacing="10">
-            <Button fx:id="returnMainButton" onAction="#handleReturnMain" prefWidth="180" style="-fx-background-color: #4a90e2; -fx-text-fill: white;" text="Return to Main Menu">
-                <font>
-                    <Font name="Lucida Sans Typewriter Bold" size="13.0" />
-                </font>
-            </Button>
-            <Button fx:id="returnLobbyButton" onAction="#handleReturnLobby" prefWidth="180" style="-fx-background-color: #4a90e2; -fx-text-fill: white;" text="Return to Lobby">
+            <Button fx:id="quitButton" onAction="#handleQuit" prefHeight="24.0" prefWidth="163.0" style="-fx-background-color: #4a90e2; -fx-text-fill: white;" text="Quit Game">
                 <font>
                     <Font name="Lucida Sans Typewriter Bold" size="13.0" />
                 </font>

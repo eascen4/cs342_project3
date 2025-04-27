@@ -1,46 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="400" prefWidth="600" style="-fx-background-color: #f3efef;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.GameController">
+<BorderPane prefHeight="400" prefWidth="600" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.GameController">
+
+    <children>
+        <ImageView fitHeight="400.0" fitWidth="600.0" opacity="0.5" pickOnBounds="false" preserveRatio="false">
+            <image>
+                <Image url="@gameImage.gif" />
+            </image>
+            <effect>
+                <ColorAdjust brightness="-0.12" />
+            </effect>
+        </ImageView>
+    </children>
 
     <top>
         <VBox alignment="CENTER">
-            <Label fx:id="turnLabel" prefHeight="42.0" prefWidth="206.0" style="-fx-font-weight: bold;" text="    Waiting for game start...">
-                <font>
-                    <Font name="System Bold" size="15.0" />
-                </font>
-            </Label>
+            <padding>
+                <Insets bottom="10" top="10" />
+            </padding>
+            <Label fx:id="turnLabel" prefHeight="42.0" prefWidth="300.0" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #d27142; -fx-effect: dropshadow(gaussian, #1b1b1b, 2, 0, 0, 1);" text="        Waiting for game start..." />
         </VBox>
     </top>
 
     <center>
-        <HBox alignment="CENTER" prefHeight="300.0" prefWidth="580.0" spacing="20">
+        <HBox alignment="CENTER" spacing="20">
             <!-- Game Board -->
-            <GridPane fx:id="boardGrid" hgap="5" style="-fx-background-color: lightblue;" vgap="5" />
+            <GridPane fx:id="boardGrid" hgap="5" style="-fx-background-color: rgba(173, 216, 230, 0.7); -fx-background-radius: 10;" vgap="5" />
 
             <!-- Chat System -->
             <VBox alignment="TOP_CENTER" spacing="10">
-                <ListView fx:id="listChat" prefHeight="251.0" prefWidth="210.0" />
+                <ListView fx:id="listChat" prefHeight="251.0" prefWidth="210.0" style="-fx-background-radius: 10; -fx-background-color: rgba(255,255,255,0.7);" />
                 <HBox spacing="5">
-                    <TextField fx:id="chatField" promptText="Enter message..." HBox.hgrow="ALWAYS" />
-                    <Button onAction="#handleSendChat" text="Send" />
+                    <TextField fx:id="chatField" promptText="Enter message..." style="-fx-background-radius: 8; -fx-background-color: white; -fx-opacity: 0.9;" HBox.hgrow="ALWAYS" />
+                    <Button onAction="#handleSendChat" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 8;" text="Send" />
                 </HBox>
             </VBox>
         </HBox>
     </center>
-
-
-    <bottom>
-        <HBox alignment="CENTER_RIGHT" prefHeight="45.0" prefWidth="600.0" spacing="15" style="-fx-padding: 10;">
-            <Button fx:id="returnMainButton" onAction="#handleReturnMain" text="Return to Main Menu" textFill="#f24747">
-                <font>
-                    <Font name="System Bold" size="12.800000190734863" />
-                </font>
-            </Button>
-        </HBox>
-    </bottom>
 
 </BorderPane>
