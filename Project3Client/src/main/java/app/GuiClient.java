@@ -100,14 +100,15 @@ public class GuiClient extends Application {
 				lobbyController.setGuiClient(this);
 				lobbyController.setClient(client);
 			}
-//			else if (controller instanceof GameController) {
-//				gameController = (GameController) controller;
-//				gameController.setGuiClient(this);
-//				gameController.setNetworkService(networkService);
-//				if (userData instanceof GameStartNotification) {
-//					gameController.initializeGame((GameStartNotification) userData);
-//				}
-//			} else if (controller instanceof ResultController) {
+			else if (controller instanceof GameController) {
+				gameController = (GameController) controller;
+				gameController.setGuiClient(this);
+				gameController.setClient(client);
+				if (userData instanceof GameStartNotification) {
+					gameController.initializeGame((GameStartNotification) userData);
+				}
+			}
+//			else if (controller instanceof ResultController) {
 //				resultController = (ResultController) controller;
 //				resultController.setApp(this);
 //				resultController.setNetworkService(networkService);

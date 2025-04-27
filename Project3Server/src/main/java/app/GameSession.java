@@ -19,6 +19,7 @@ public class GameSession {
     @Getter
     private final String gameId; // Helps identify the game
     private final Server server;
+    @Getter
     private final ConnectFourGame game;
 
     private final List<ClientRunnable> players;
@@ -58,16 +59,22 @@ public class GameSession {
     }
 
     public synchronized void handleMove(ClientRunnable requestingClient, int column) {
-        if(game.getStatus() != ConnectFourGame.GameStatus.NOT_STARTED) {
+
+        if (game.getStatus() != ConnectFourGame.GameStatus.PLAYING) {
+            log.warn("Move attempt failed in game {}: Game is not active (Status: {}).", gameId, game.getStatus());
+            requestingClient.sendMessage(new ErrorResponse("Game is not currently active."));
             return;
         }
 
         int playerId = requestingClient.getPlayerId();
-        if(playerId != game.getCurrentPlayerId()) {
+        if (playerId != game.getCurrentPlayerId()) {
+            log.warn("Move attempt failed in game {}: It's not Player {}'s turn (Current: {}).", gameId, playerId, game.getCurrentPlayerId());
+            requestingClient.sendMessage(new ErrorResponse("It's not your turn."));
             return;
         }
 
         boolean isSuccess = game.dropPiece(playerId, column);
+
         if(isSuccess) {
             broadcastGameState();
 
@@ -75,7 +82,8 @@ public class GameSession {
                 handleGameEnd();
             }
         } else {
-
+            log.warn("Move attempt failed in game {}: Player {}'s move in column {} was invalid (rejected by game logic).", gameId, playerId, column);
+            requestingClient.sendMessage(new ErrorResponse("Invalid move: Column might be full or invalid."));
         }
     }
 

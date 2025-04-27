@@ -6,6 +6,8 @@ import java.util.List;
 
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class GameDto {
     private String gameId;
     private List<PlayerInfo> players;

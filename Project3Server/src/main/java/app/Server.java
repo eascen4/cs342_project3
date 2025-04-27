@@ -1,6 +1,7 @@
 package app;
 
 import app.controllers.ServerDashboardController;
+import app.dto.PlayerInfo;
 import app.dto.messages.MessageType;
 import app.dto.messages.BaseMessage;
 import app.dto.messages.client.ChatMessage;
@@ -8,6 +9,7 @@ import app.dto.messages.client.LoginRequest;
 import app.dto.messages.client.MatchRequest;
 import app.dto.messages.client.MoveRequest;
 import app.dto.messages.server.ErrorResponse;
+import app.dto.messages.server.GameStartNotification;
 import app.dto.messages.server.LoginResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -300,12 +302,51 @@ public class Server {
 			if (queue.drainTo(participants, playerCount) == playerCount) {
 				log.info("Found match for " + playerCount + " players: " + participants.stream().map(ClientRunnable::getUsername).collect(Collectors.joining(", ")));
 
-				// Create and start the game session
-				GameSession newSession = new GameSession(participants, this);
-				activeGames.put(newSession.getGameId(), newSession);
-				newSession.startGame();
-				broadcastUserListUpdate(); // Update statuses to IN_GAME
-				updateUILists();
+				try {
+					// Create the game session - THIS ASSIGNS PLAYER IDs internally
+					GameSession newSession = new GameSession(participants, this);
+					activeGames.put(newSession.getGameId(), newSession);
+
+					int startingPlayerId = newSession.getGame().getCurrentPlayerId();
+					int[][] initialBoard = newSession.getGame().getBoard();
+
+					for (ClientRunnable participant : participants) {
+						List<PlayerInfo> opponents = participants.stream()
+								.filter(p -> p != participant) // Exclude self
+								.map(opponent ->
+                                        PlayerInfo.builder()
+                                                .status(PlayerInfo.PlayerStatus.IN_GAME)
+                                                .username(opponent.getUsername()).build())
+								.collect(Collectors.toList());
+
+						// Create the notification tailored for this participant
+						GameStartNotification notification = new GameStartNotification(
+								newSession.getGameId(),
+								opponents,
+								participant.getPlayerId(), // The ID assigned by GameSession constructor
+								startingPlayerId,
+								initialBoard,
+								playerCount
+						);
+
+						// Send the notification
+						participant.sendMessage(notification);
+						log.debug("Sent GAME_START to Player {} ({})", participant.getPlayerId(), participant.getUsername());
+					}
+
+					newSession.startGame();
+
+					broadcastUserListUpdate();
+					updateUILists(); // Update server GUI
+
+				} catch (Exception e) {
+					log.error("!!! CRITICAL: Failed to create or start game session after matching players !!!", e);
+
+					participants.forEach(p -> {
+						p.sendMessage(new ErrorResponse("Failed to start game after match found. Please try again."));
+						queue.offer(p);
+					});
+				}
 			} else {
 				log.warn("Could not drain enough players for {}-player match, putting back.", playerCount);
 				participants.forEach(queue::offer); // Put them back
@@ -318,6 +359,7 @@ public class Server {
 	}
 
 	private void handleMoveRequest(MoveRequest msg, ClientRunnable sender) {
+		log.info("User [" + sender.getUsername() + "] requests move.");
 		GameSession session = sender.getCurrentGameSession();
 		if (session == null || !session.getGameId().equals(msg.getGameId())) {
 			sender.sendMessage(new ErrorResponse("Invalid game or not in this game."));

@@ -4,6 +4,8 @@ import lombok.*;
 
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PlayerInfo {
     private String username;
     private PlayerStatus status;

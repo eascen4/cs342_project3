@@ -40,6 +40,7 @@
                         <Font name="System Bold" size="15" />
                     </font>
                 </Button>
+                <Label fx:id="statusLabel" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 2, 0, 0, 1);" visible="false"/>
             </VBox>
         </center>
 

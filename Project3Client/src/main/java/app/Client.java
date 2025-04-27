@@ -105,29 +105,27 @@ public class Client {
 					GameStartNotification gameStart = objectMapper.readValue(jsonMessage, GameStartNotification.class);
 					guiClient.showGameScene(gameStart);
 					break;
-//				case GAME_UPDATE:
-//					if (guiClient.getGameController() != null && guiClient.isGameSceneActive()) {
-//						GameStateUpdate gameState = objectMapper.readValue(jsonMessage, GameStateUpdate.class);
-//						guiClient.getGameController().updateGameState(gameState);
-//					}
-//					break;
-//				case GAME_END:
-//					if (guiClient.getGameController() != null && guiClient.isGameSceneActive()) {
-//						GameOverNotification gameOver = objectMapper.readValue(jsonMessage, GameOverNotification.class);
-//						guiClient.getGameController().handleGameOver(gameOver);
-//						// Trigger showing results scene from guiClient
-//						guiClient.showResultScene(gameOver);
-//					}
-//					break;
-//				case CHAT_NOTIFICATION:
-//					ChatBroadcast chat = objectMapper.readValue(jsonMessage, ChatBroadcast.class);
-//					// Route chat to lobby or game controller based on current scene
-//					if (guiClient.isGameSceneActive() && guiClient.getGameController() != null) {
-//						guiClient.getGameController().displayChatMessage(chat);
-//					} else if (guiClient.isLobbySceneActive() && guiClient.getLobbyController() != null) {
-//						guiClient.getLobbyController().displayChatMessage(chat);
-//					}
-//					break;
+				case GAME_UPDATE:
+					if (guiClient.getGameController() != null && guiClient.isGameSceneActive()) {
+						GameUpdate gameState = objectMapper.readValue(jsonMessage, GameUpdate.class);
+						guiClient.getGameController().updateGameState(gameState);
+					}
+					break;
+				case GAME_END:
+					if (guiClient.getGameController() != null && guiClient.isGameSceneActive()) {
+						GameEndNotification gameOver = objectMapper.readValue(jsonMessage, GameEndNotification.class);
+						guiClient.getGameController().handleGameOver(gameOver);
+
+						guiClient.showResultScene(gameOver);
+					}
+					break;
+				case CHAT_NOTIFICATION:
+					ChatBroadcast chat = objectMapper.readValue(jsonMessage, ChatBroadcast.class);
+					// Route chat to lobby or game controller based on current scene
+					if (guiClient.isGameSceneActive() && guiClient.getGameController() != null) {
+						guiClient.getGameController().displayChatMessage(chat);
+					}
+					break;
 				case ERROR_RESPONSE:
 					ErrorResponse error = objectMapper.readValue(jsonMessage, ErrorResponse.class);
 					guiClient.showError(error.getMessage());
@@ -138,28 +136,29 @@ public class Client {
 //						guiClient.getLobbyController().handleChallengeReceived(challenge);
 //					}
 //					break;
-//				case REMATCH_NOTIFICATION:
-//					// Can be received in Game or Result scene
-//					if (guiClient.isGameSceneActive() && guiClient.getGameController() != null) {
-//						RematchReceived rematchGame = objectMapper.readValue(jsonMessage, RematchReceived.class);
-//						guiClient.getGameController().handleRematchReceived(rematchGame);
-//					} else if (guiClient.isResultSceneActive() && guiClient.getResultController() != null) {
-//						RematchReceived rematchResult = objectMapper.readValue(jsonMessage, RematchReceived.class);
+				case REMATCH_NOTIFICATION:
+					// Can be received in Game or Result scene
+					if (guiClient.isGameSceneActive() && guiClient.getGameController() != null) {
+						RematchNotification rematchGame = objectMapper.readValue(jsonMessage, RematchNotification.class);
+						guiClient.getGameController().handleRematchReceived(rematchGame);
+					}
+//					else if (guiClient.isResultSceneActive() && guiClient.getResultController() != null) {
+//						RematchNotification rematchResult = objectMapper.readValue(jsonMessage, RematchNotification.class);
 //						guiClient.getResultController().handleRematchReceived(rematchResult); // Add this method to ResultController
 //					}
-//					break;
-//				case WAITING_FOR_PLAYERS:
-//					if (guiClient.getLobbyController() != null && guiClient.isLobbySceneActive()) {
-//						WaitingForPlayersMessage waiting = objectMapper.readValue(jsonMessage, WaitingForPlayersMessage.class);
-//						guiClient.getLobbyController().showWaitingMessage(waiting);
-//					}
-//					break;
-//				case FORFEIT_NOTIFICATION:
-//					if (guiClient.getGameController() != null && guiClient.isGameSceneActive()) {
-//						ForfeitNotification forfeit = objectMapper.readValue(jsonMessage, ForfeitNotification.class);
-//						guiClient.getGameController().handleForfeit(forfeit);
-//					}
-//					break;
+					break;
+				case WAITING_FOR_PLAYERS:
+					if (guiClient.getLobbyController() != null && guiClient.isLobbySceneActive()) {
+						WaitingForPlayers waiting = objectMapper.readValue(jsonMessage, WaitingForPlayers.class);
+						guiClient.getLobbyController().showWaitingMessage(waiting);
+					}
+					break;
+				case FORFEIT_NOTIFICATION:
+					if (guiClient.getGameController() != null && guiClient.isGameSceneActive()) {
+						ForfeitNotification forfeit = objectMapper.readValue(jsonMessage, ForfeitNotification.class);
+						guiClient.getGameController().handleForfeit(forfeit);
+					}
+					break;
 //				case REMATCH_REQUEST_UPDATE:
 //					// Can be received in Game or Result scene
 //					if (guiClient.isGameSceneActive() && guiClient.getGameController() != null) {
